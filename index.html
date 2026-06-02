@@ -1,1 +1,921 @@
-<h1>Hej verden!</h1>
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elevpladsen.dk — Find din elevplads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-900: #0f2e0a;
+    --green-800: #1a4a11;
+    --green-700: #236016;
+    --green-600: #2d771b;
+    --green-500: #3a9222;
+    --green-400: #5ab33f;
+    --green-300: #84cc6a;
+    --green-200: #b8e8a8;
+    --green-100: #dff4d8;
+    --green-50:  #f3fbf0;
+    --sand-100: #faf7f2;
+    --sand-200: #f0ebe0;
+    --sand-300: #ddd5c5;
+    --dark: #141410;
+    --mid: #3d3d35;
+    --muted: #7a7a6e;
+    --white: #ffffff;
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: var(--sand-100);
+    color: var(--dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sand-300);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--dark);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span { color: var(--green-600); }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+  .nav-links a {
+    font-size: 14px; color: var(--mid); text-decoration: none; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--dark); }
+
+  .nav-cta {
+    background: var(--dark);
+    color: var(--white) !important;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-weight: 500 !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--green-800) !important; color: var(--white) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start;
+    padding: 8rem 2.5rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--green-200);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .hero-bg-circle.c1 { width: 600px; height: 600px; top: -150px; right: -150px; }
+  .hero-bg-circle.c2 { width: 300px; height: 300px; bottom: 50px; left: -80px; opacity: 0.2; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--green-100); color: var(--green-700);
+    padding: 5px 14px; border-radius: 100px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--green-300);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    color: var(--dark);
+    max-width: 820px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 .accent { color: var(--green-600); }
+  .hero h1 .line2 { display: block; }
+
+  .hero-sub {
+    font-size: 18px; color: var(--muted); max-width: 520px;
+    margin-bottom: 2.5rem; line-height: 1.65;
+  }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--green-700); color: var(--white);
+    padding: 14px 28px; border-radius: 100px;
+    font-size: 15px; font-weight: 500; text-decoration: none;
+    border: none; cursor: pointer; transition: background 0.2s, transform 0.15s;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .btn-primary:hover { background: var(--green-800); transform: translateY(-1px); }
+
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; color: var(--dark);
+    padding: 14px 28px; border-radius: 100px;
+    font-size: 15px; font-weight: 500; text-decoration: none;
+    border: 1.5px solid var(--sand-300); cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .btn-outline:hover { border-color: var(--dark); transform: translateY(-1px); }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4rem;
+    padding-top: 2rem; border-top: 1px solid var(--sand-300);
+    width: 100%; max-width: 560px;
+  }
+
+  .hero-stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px; font-weight: 800; letter-spacing: -1px;
+    color: var(--dark); display: block;
+  }
+
+  .hero-stat-label { font-size: 13px; color: var(--muted); }
+
+  /* SECTION */
+  section { padding: 5rem 2.5rem; }
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--green-600);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700; letter-spacing: -1px;
+    line-height: 1.1; color: var(--dark);
+    margin-bottom: 1rem;
+  }
+  .section-sub {
+    font-size: 16px; color: var(--muted);
+    max-width: 480px; line-height: 1.65;
+  }
+
+  /* HOW IT WORKS */
+  .hiw { background: var(--white); }
+  .hiw-inner { max-width: 1100px; margin: 0 auto; }
+  .hiw-header { margin-bottom: 3.5rem; }
+
+  .hiw-tabs { display: flex; gap: 8px; margin-bottom: 3rem; }
+  .hiw-tab {
+    padding: 8px 20px; border-radius: 100px;
+    font-size: 14px; font-weight: 500;
+    border: 1.5px solid var(--sand-300);
+    background: transparent; cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Instrument Sans', sans-serif;
+    color: var(--muted);
+  }
+  .hiw-tab.active {
+    background: var(--dark); color: var(--white);
+    border-color: var(--dark);
+  }
+
+  .hiw-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .hiw-step {
+    background: var(--sand-100);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    border: 1px solid var(--sand-200);
+    position: relative;
+  }
+
+  .step-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: var(--green-600); margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .step-icon {
+    width: 48px; height: 48px;
+    background: var(--green-100);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 1.25rem;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700; letter-spacing: -0.3px;
+    margin-bottom: 0.6rem; color: var(--dark);
+  }
+
+  .step-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  /* JOBS SECTION */
+  .jobs-section { background: var(--sand-100); }
+  .jobs-inner { max-width: 1100px; margin: 0 auto; }
+  .jobs-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; }
+
+  .job-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; }
+  .job-filter {
+    padding: 6px 16px; border-radius: 100px;
+    font-size: 13px; border: 1px solid var(--sand-300);
+    background: var(--white); cursor: pointer;
+    transition: all 0.15s; color: var(--mid);
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .job-filter.active, .job-filter:hover {
+    background: var(--dark); color: var(--white); border-color: var(--dark);
+  }
+
+  .jobs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .job-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--sand-200);
+    display: flex; flex-direction: column; gap: 1rem;
+    cursor: pointer; transition: box-shadow 0.2s, transform 0.15s;
+    text-decoration: none; color: inherit;
+  }
+  .job-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.07); transform: translateY(-2px); }
+
+  .job-card-top { display: flex; align-items: center; gap: 12px; }
+
+  .job-logo {
+    width: 46px; height: 46px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .job-card-info { flex: 1; min-width: 0; }
+  .job-company { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+  .job-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+
+  .job-card-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .job-meta-item {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; color: var(--muted);
+  }
+
+  .job-card-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .job-tag {
+    font-size: 11px; font-weight: 500;
+    padding: 4px 12px; border-radius: 100px;
+  }
+  .tag-green { background: var(--green-100); color: var(--green-700); }
+  .tag-blue { background: #e8f1fb; color: #1a5fa5; }
+  .tag-amber { background: #faeeda; color: #854f0b; }
+  .tag-coral { background: #faece7; color: #993c1d; }
+
+  .job-deadline { font-size: 12px; color: var(--muted); }
+
+  /* PRICING */
+  .pricing { background: var(--dark); color: var(--white); }
+  .pricing-inner { max-width: 1000px; margin: 0 auto; }
+  .pricing .section-label { color: var(--green-400); }
+  .pricing .section-title { color: var(--white); }
+  .pricing .section-sub { color: rgba(255,255,255,0.55); }
+
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-top: 3rem;
+  }
+
+  .pricing-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .pricing-card.featured {
+    background: var(--green-700);
+    border-color: var(--green-500);
+  }
+
+  .pricing-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--green-400); color: var(--dark);
+    padding: 3px 10px; border-radius: 100px;
+    margin-bottom: 1.25rem;
+  }
+
+  .pricing-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700; margin-bottom: 0.5rem;
+    color: var(--white);
+  }
+
+  .pricing-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 38px; font-weight: 800; letter-spacing: -1.5px;
+    color: var(--white); margin-bottom: 0.25rem;
+  }
+
+  .pricing-price span { font-size: 16px; font-weight: 400; opacity: 0.6; letter-spacing: 0; }
+  .pricing-desc { font-size: 13px; opacity: 0.6; margin-bottom: 1.75rem; line-height: 1.5; }
+
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .pricing-features li {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 13px; opacity: 0.85; line-height: 1.45;
+  }
+  .pricing-features li::before { content: '✓'; color: var(--green-400); font-weight: 700; flex-shrink: 0; }
+  .pricing-card.featured .pricing-features li::before { color: var(--green-200); }
+
+  .pricing-cta {
+    display: block; text-align: center;
+    background: rgba(255,255,255,0.1); color: var(--white);
+    padding: 12px; border-radius: 100px;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    margin-top: 2rem; border: 1px solid rgba(255,255,255,0.2);
+    transition: background 0.2s;
+    font-family: 'Instrument Sans', sans-serif;
+    cursor: pointer;
+  }
+  .pricing-cta:hover { background: rgba(255,255,255,0.18); }
+  .pricing-card.featured .pricing-cta {
+    background: var(--white); color: var(--green-800);
+  }
+
+  /* TESTIMONIALS */
+  .testimonials { background: var(--white); }
+  .testimonials-inner { max-width: 1100px; margin: 0 auto; }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 3rem; }
+
+  .testimonial-card {
+    background: var(--sand-100);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    border: 1px solid var(--sand-200);
+  }
+
+  .testimonial-quote {
+    font-size: 15px; line-height: 1.65; color: var(--mid);
+    font-style: italic; margin-bottom: 1.25rem;
+  }
+
+  .testimonial-author { display: flex; align-items: center; gap: 10px; }
+  .testimonial-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .testimonial-name { font-size: 13px; font-weight: 500; color: var(--dark); }
+  .testimonial-role { font-size: 12px; color: var(--muted); }
+
+  /* APPLY SECTION */
+  .apply-section { background: var(--green-700); color: var(--white); text-align: center; }
+  .apply-section .section-title { color: var(--white); max-width: 600px; margin: 0 auto 1rem; }
+  .apply-section .section-sub { color: rgba(255,255,255,0.7); max-width: 420px; margin: 0 auto 2.5rem; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: var(--white);
+    padding: 3rem 2.5rem 2rem;
+  }
+
+  .footer-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2rem; padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+    color: var(--white); margin-bottom: 0.75rem;
+  }
+  .footer-logo span { color: var(--green-400); }
+  .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; max-width: 220px; }
+
+  .footer-col h4 {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: rgba(255,255,255,0.4);
+    margin-bottom: 1rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-col ul a { font-size: 13px; color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.2s; }
+  .footer-col ul a:hover { color: var(--white); }
+
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+  .footer-legal { display: flex; gap: 1.5rem; }
+  .footer-legal a { font-size: 12px; color: rgba(255,255,255,0.3); text-decoration: none; }
+
+  /* MODAL overlay for apply */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 2.5rem; max-width: 540px; width: 90%; max-height: 90vh;
+    overflow-y: auto; position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 1.25rem; right: 1.25rem;
+    background: var(--sand-200); border: none; border-radius: 50%;
+    width: 32px; height: 32px; cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+  .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.75rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 14px; border-radius: 10px;
+    border: 1.5px solid var(--sand-300); background: var(--sand-100);
+    font-family: 'Instrument Sans', sans-serif; font-size: 14px;
+    color: var(--dark); transition: border-color 0.15s;
+    outline: none;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--green-500); background: var(--white);
+  }
+  .form-group textarea { height: 100px; resize: none; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-submit {
+    width: 100%; padding: 13px;
+    background: var(--green-700); color: var(--white);
+    border: none; border-radius: 100px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 15px; font-weight: 500; cursor: pointer;
+    margin-top: 0.5rem; transition: background 0.2s;
+  }
+  .form-submit:hover { background: var(--green-800); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    .hero { padding: 6rem 1.25rem 3rem; }
+    .hero-stats { gap: 1.5rem; }
+    section { padding: 3.5rem 1.25rem; }
+    .hiw-steps, .jobs-grid, .pricing-grid, .testimonials-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .jobs-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Elev<span>pladsen</span>.dk</a>
+  <ul class="nav-links">
+    <li><a href="#jobs">Ledige pladser</a></li>
+    <li><a href="#how">Sådan virker det</a></li>
+    <li><a href="#priser">Priser</a></li>
+    <li><a href="#" class="nav-cta" onclick="openModal()">Søg nu →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+
+  <span class="hero-badge">🇩🇰 Danmarks nye elevplatform</span>
+
+  <h1>
+    Stop med at søge<br>
+    <span class="accent">elevplads</span>
+    <span class="line2">på Facebook</span>
+  </h1>
+
+  <p class="hero-sub">
+    Elevpladsen.dk samler alle elevstillinger ét sted. Virksomheder opretter deres opslag, og elever ansøger direkte — hurtigt, nemt og professionelt.
+  </p>
+
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="document.getElementById('jobs').scrollIntoView({behavior:'smooth'})">Se ledige pladser →</button>
+    <button class="btn-outline" onclick="document.getElementById('virksomhed').scrollIntoView({behavior:'smooth'})">Er du en virksomhed?</button>
+  </div>
+
+  <div class="hero-stats">
+    <div>
+      <span class="hero-stat-num">147</span>
+      <span class="hero-stat-label">Ledige elevpladser</span>
+    </div>
+    <div>
+      <span class="hero-stat-num">83</span>
+      <span class="hero-stat-label">Tilknyttede virksomheder</span>
+    </div>
+    <div>
+      <span class="hero-stat-num">12</span>
+      <span class="hero-stat-label">Brancher dækket</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw" id="how">
+  <div class="hiw-inner">
+    <div class="hiw-header">
+      <p class="section-label">Sådan virker det</p>
+      <h2 class="section-title">To sider af samme mønt</h2>
+      <p class="section-sub">Platformen er bygget til både elever og virksomheder — med separate flows der giver mening for begge.</p>
+    </div>
+
+    <div class="hiw-tabs">
+      <button class="hiw-tab active" onclick="switchTab(this,'elev')">For elever</button>
+      <button class="hiw-tab" onclick="switchTab(this,'virksomhed')">For virksomheder</button>
+    </div>
+
+    <div class="hiw-steps" id="tab-elev">
+      <div class="hiw-step">
+        <p class="step-num">TRIN 01</p>
+        <div class="step-icon">🔍</div>
+        <h3 class="step-title">Søg og filtrer</h3>
+        <p class="step-desc">Find elevpladser efter branche, by og opstartstidspunkt. Gemte søgninger sender dig en notifikation når nye pladser dukker op.</p>
+      </div>
+      <div class="hiw-step">
+        <p class="step-num">TRIN 02</p>
+        <div class="step-icon">📄</div>
+        <h3 class="step-title">Opret din profil</h3>
+        <p class="step-desc">Upload dit CV, skriv en kort præsentation og tilføj dine karakterer. Det gemmes til alle dine fremtidige ansøgninger.</p>
+      </div>
+      <div class="hiw-step">
+        <p class="step-num">TRIN 03</p>
+        <div class="step-icon">🚀</div>
+        <h3 class="step-title">Ansøg direkte</h3>
+        <p class="step-desc">Send din ansøgning med to klik. Følg status i dit dashboard og modtag svar direkte i din e-mail.</p>
+      </div>
+    </div>
+
+    <div class="hiw-steps" id="tab-virksomhed" style="display:none;">
+      <div class="hiw-step">
+        <p class="step-num">TRIN 01</p>
+        <div class="step-icon">🏢</div>
+        <h3 class="step-title">Opret virksomhedsprofil</h3>
+        <p class="step-desc">Tilføj logo, beskrivelse og arbejdskultur. En god profil tiltrækker langt flere ansøgere end et Facebook-opslag.</p>
+      </div>
+      <div class="hiw-step">
+        <p class="step-num">TRIN 02</p>
+        <div class="step-icon">📝</div>
+        <h3 class="step-title">Opret din stilling</h3>
+        <p class="step-desc">Beskriv elevpladsen, startdato, branche og arbejdstid. Det tager under 5 minutter og er live med det samme.</p>
+      </div>
+      <div class="hiw-step">
+        <p class="step-num">TRIN 03</p>
+        <div class="step-icon">📬</div>
+        <h3 class="step-title">Modtag ansøgninger</h3>
+        <p class="step-desc">Se alle ansøgninger samlet i dit dashboard. Svar, afvis eller book en samtale direkte i platformen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOBS SECTION -->
+<section class="jobs-section" id="jobs">
+  <div class="jobs-inner">
+    <div class="jobs-header">
+      <div>
+        <p class="section-label">Ledige pladser</p>
+        <h2 class="section-title">Find din elevplads</h2>
+      </div>
+      <button class="btn-outline" style="font-size:13px;padding:10px 20px;" onclick="openModal()">Se alle 147 →</button>
+    </div>
+
+    <div class="job-filters">
+      <button class="job-filter active">Alle brancher</button>
+      <button class="job-filter">Handel & service</button>
+      <button class="job-filter">IT & tech</button>
+      <button class="job-filter">Kontor & administration</button>
+      <button class="job-filter">Håndværk</button>
+      <button class="job-filter">Sundhed & omsorg</button>
+    </div>
+
+    <div class="jobs-grid">
+      <a class="job-card" href="#" onclick="openModal(); return false;">
+        <div class="job-card-top">
+          <div class="job-logo" style="background:#dff4d8;color:#236016;">FX</div>
+          <div class="job-card-info">
+            <div class="job-company">Føtex</div>
+            <div class="job-title">Salgsassistent — elevplads</div>
+          </div>
+        </div>
+        <div class="job-card-meta">
+          <span class="job-meta-item">📍 Kolding</span>
+          <span class="job-meta-item">⏱ Fuld tid</span>
+          <span class="job-meta-item">🗓 Start: Aug 2025</span>
+        </div>
+        <div class="job-card-bottom">
+          <span class="job-tag tag-green">Handel & service</span>
+          <span class="job-deadline">Frist 20. juni</span>
+        </div>
+      </a>
+
+      <a class="job-card" href="#" onclick="openModal(); return false;">
+        <div class="job-card-top">
+          <div class="job-logo" style="background:#e8f1fb;color:#1a5fa5;">SY</div>
+          <div class="job-card-info">
+            <div class="job-company">Systematic A/S</div>
+            <div class="job-title">IT-supporter — elevplads</div>
+          </div>
+        </div>
+        <div class="job-card-meta">
+          <span class="job-meta-item">📍 Aarhus</span>
+          <span class="job-meta-item">⏱ Fuld tid</span>
+          <span class="job-meta-item">🗓 Start: Sep 2025</span>
+        </div>
+        <div class="job-card-bottom">
+          <span class="job-tag tag-blue">IT & tech</span>
+          <span class="job-deadline">Frist 15. juli</span>
+        </div>
+      </a>
+
+      <a class="job-card" href="#" onclick="openModal(); return false;">
+        <div class="job-card-top">
+          <div class="job-logo" style="background:#faeeda;color:#854f0b;">VK</div>
+          <div class="job-card-info">
+            <div class="job-company">Vejle Kommune</div>
+            <div class="job-title">Kontorassistent — elevplads</div>
+          </div>
+        </div>
+        <div class="job-card-meta">
+          <span class="job-meta-item">📍 Vejle</span>
+          <span class="job-meta-item">⏱ Fuld tid</span>
+          <span class="job-meta-item">🗓 Start: Aug 2025</span>
+        </div>
+        <div class="job-card-bottom">
+          <span class="job-tag tag-amber">Kontor & administration</span>
+          <span class="job-deadline">Frist 1. aug</span>
+        </div>
+      </a>
+
+      <a class="job-card" href="#" onclick="openModal(); return false;">
+        <div class="job-card-top">
+          <div class="job-logo" style="background:#faece7;color:#993c1d;">LH</div>
+          <div class="job-card-info">
+            <div class="job-company">Lars Hansen VVS</div>
+            <div class="job-title">VVS-montør — elevplads</div>
+          </div>
+        </div>
+        <div class="job-card-meta">
+          <span class="job-meta-item">📍 Fredericia</span>
+          <span class="job-meta-item">⏱ Fuld tid</span>
+          <span class="job-meta-item">🗓 Start: Okt 2025</span>
+        </div>
+        <div class="job-card-bottom">
+          <span class="job-tag tag-coral">Håndværk</span>
+          <span class="job-deadline">Frist 10. aug</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="priser">
+  <div class="pricing-inner">
+    <p class="section-label">Priser for virksomheder</p>
+    <h2 class="section-title">Simpel og gennemsigtig prissætning</h2>
+    <p class="section-sub">Gratis at søge som elev — altid. Virksomheder betaler kun for det de har brug for.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Basis</div>
+        <div class="pricing-price">Gratis <span></span></div>
+        <div class="pricing-desc">Perfekt til at komme i gang og prøve platformen af.</div>
+        <ul class="pricing-features">
+          <li>1 aktiv elevstilling</li>
+          <li>Grundlæggende virksomhedsprofil</li>
+          <li>Modtag ansøgninger via e-mail</li>
+          <li>Op til 10 ansøgere</li>
+        </ul>
+        <a href="#" class="pricing-cta">Opret gratis konto</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <span class="pricing-badge">Mest populær</span>
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-price">799 <span>kr/md</span></div>
+        <div class="pricing-desc">Til virksomheder der aktivt søger elever og vil have det fulde overblik.</div>
+        <ul class="pricing-features">
+          <li>Op til 5 aktive elevstillinger</li>
+          <li>Fuldt virksomhedsprofil med billeder</li>
+          <li>Dashboard med ansøgeroversigt</li>
+          <li>Filtrer og sorter ansøgere</li>
+          <li>E-mail notifikationer</li>
+          <li>Fremhævet i søgeresultater</li>
+        </ul>
+        <a href="#" class="pricing-cta">Start 14 dages gratis prøve</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-name">Erhverv</div>
+        <div class="pricing-price">Lad os <span></span></div>
+        <div class="pricing-desc">Til større virksomheder og kommuner med mange elevpladser på tværs af afdelinger.</div>
+        <ul class="pricing-features">
+          <li>Ubegrænset antal stillinger</li>
+          <li>Flere brugere pr. konto</li>
+          <li>API-integration til HR-systemer</li>
+          <li>Månedlige rekrutteringsrapporter</li>
+          <li>Dedikeret kundesupport</li>
+          <li>Tilpasset onboarding</li>
+        </ul>
+        <a href="#" class="pricing-cta">Kontakt os →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <p class="section-label">Hvad folk siger</p>
+    <h2 class="section-title">Rigtige historier</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <p class="testimonial-quote">"Jeg brugte 3 uger på at scanne Facebook-grupper uden held. På Elevpladsen.dk fandt jeg en plads inden for 4 dage."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#dff4d8;color:#236016;">MN</div>
+          <div>
+            <div class="testimonial-name">Mathias Nielsen</div>
+            <div class="testimonial-role">Elev, Kolding · Handel & service</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-quote">"Vi fik 14 kvalificerede ansøgninger på en uge — det er langt bedre end vores Facebook-opslag nogensinde klarede sig."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#e8f1fb;color:#1a5fa5;">KH</div>
+          <div>
+            <div class="testimonial-name">Katrine Holm</div>
+            <div class="testimonial-role">HR-ansvarlig · Vejle Kommune</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-quote">"Endelig et sted hvor elevpladser ikke drukner i salgsopslag og delebiler. Vi bruger det til alle vores pladser nu."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#faeeda;color:#854f0b;">PL</div>
+          <div>
+            <div class="testimonial-name">Peter Lund</div>
+            <div class="testimonial-role">Ejer · Lund El-installation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="apply-section" id="virksomhed">
+  <p class="section-label" style="color:rgba(255,255,255,0.7);">Kom i gang i dag</p>
+  <h2 class="section-title">Klar til at finde din næste elev?</h2>
+  <p class="section-sub">Opret din virksomhedsprofil gratis og hav din første stilling live på under 5 minutter.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button class="btn-primary" style="background:var(--white);color:var(--green-800);" onclick="openModal()">Opret gratis konto →</button>
+    <button class="btn-outline" style="border-color:rgba(255,255,255,0.4);color:var(--white);">Se demo</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Elev<span>pladsen</span>.dk</div>
+      <p class="footer-tagline">Danmarks dedikerede platform for elevpladser og elever. Ingen Facebook. Bare det der virker.</p>
+    </div>
+    <div class="footer-col">
+      <h4>For elever</h4>
+      <ul>
+        <li><a href="#">Søg elevpladser</a></li>
+        <li><a href="#">Opret profil</a></li>
+        <li><a href="#">Gem søgninger</a></li>
+        <li><a href="#">Mine ansøgninger</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>For virksomheder</h4>
+      <ul>
+        <li><a href="#">Opret stilling</a></li>
+        <li><a href="#">Virksomhedsprofil</a></li>
+        <li><a href="#">Priser</a></li>
+        <li><a href="#">Kontakt os</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Om os</h4>
+      <ul>
+        <li><a href="#">Vores mission</a></li>
+        <li><a href="#">Presse</a></li>
+        <li><a href="#">Privatlivspolitik</a></li>
+        <li><a href="#">Vilkår</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Elevpladsen.dk — CVR: 12 34 56 78</span>
+    <div class="footer-legal">
+      <a href="#">Privatlivspolitik</a>
+      <a href="#">Cookies</a>
+      <a href="#">Vilkår</a>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2>Ansøg til elevplads</h2>
+    <p class="modal-sub">Udfyld formularen — din ansøgning sendes direkte til virksomheden.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Fornavn</label>
+        <input type="text" placeholder="Anders">
+      </div>
+      <div class="form-group">
+        <label>Efternavn</label>
+        <input type="text" placeholder="Nielsen">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>E-mail</label>
+      <input type="email" placeholder="anders@mail.dk">
+    </div>
+    <div class="form-group">
+      <label>Telefon</label>
+      <input type="tel" placeholder="12 34 56 78">
+    </div>
+    <div class="form-group">
+      <label>Nuværende skole / uddannelsesniveau</label>
+      <input type="text" placeholder="fx Kolding HF & VUC, 10. klasse, HHX...">
+    </div>
+    <div class="form-group">
+      <label>Ønsket startdato</label>
+      <input type="text" placeholder="fx August 2025">
+    </div>
+    <div class="form-group">
+      <label>Motivationsbrev (kort)</label>
+      <textarea placeholder="Fortæl virksomheden hvorfor du søger denne elevplads og hvad du kan bidrage med..."></textarea>
+    </div>
+    <button class="form-submit">Send ansøgning →</button>
+  </div>
+</div>
+
+<script>
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+function switchTab(btn, tab) {
+  document.querySelectorAll('.hiw-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-elev').style.display = tab === 'elev' ? 'grid' : 'none';
+  document.getElementById('tab-virksomhed').style.display = tab === 'virksomhed' ? 'grid' : 'none';
+}
+document.querySelectorAll('.job-filter').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.job-filter').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
